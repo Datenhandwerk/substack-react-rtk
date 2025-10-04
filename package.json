@@ -1,12 +1,12 @@
 {
-  "name": "dhwk-substack-react",
-  "version": "1.0.0",
+  "name": "@datenhandwerk/substack-react-rtk",
+  "version": "1.0.1",
   "type": "module",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && tsc --project tsconfig.build.json",
     "preview": "vite preview"
   },
   "dependencies": {

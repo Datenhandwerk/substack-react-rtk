@@ -1,0 +1,26 @@
+# Source
+src/
+dev/
+
+# Config
+vite.config.ts
+tsconfig.json
+tsconfig.build.json
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Build artifacts
+node_modules/
+*.log
+
+# Tests
+*.test.ts
+*.spec.ts

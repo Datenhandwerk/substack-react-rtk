@@ -15,10 +15,10 @@ A modern React library for Substack API integration with Redux Toolkit Query.
 ``` bash
 
 # With Yarn
-yarn add substack-react-rtk
+yarn add @datenhandwerk/substack-react-rtk
 
 # With npm
-npm install substack-react-rtk
+npm install @datenhandwerk/substack-react-rtk
 ```
 ### Peer Dependencies
 
@@ -34,7 +34,7 @@ Wrap your app with the `SubstackProvider`:
 ``` typescript
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { SubstackProvider } from 'substack-react-rtk';
+import { SubstackProvider } from '@datenhandwerk/substack-react-rtk';
 import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -56,7 +56,7 @@ VITE_SUBSTACK_PUBLICATION=publication_url (e.g. example.substack.com)
 ### 3. Use Hooks
 ``` typescript
 import React from 'react';
-import { useGetLatestPostsQuery } from 'substack-react-rtk';
+import { useGetLatestPostsQuery } from '@datenhandwerk/substack-react-rtk';
 
 export const BlogPosts: React.FC = () => {
 const { data, isLoading, error } = useGetLatestPostsQuery({
