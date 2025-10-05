@@ -6,7 +6,7 @@ export const TestSubstack: React.FC = () => {
   // Test für einzelnen Post
   const { data: post, error: postError, isLoading: postLoading } = useGetPostQuery({
     publication_url: import.meta.env.VITE_SUBSTACK_PUBLICATION,
-    slug: 'test-post'
+    slug: 'von-der-ki-idee-zum-produkt'
   });
 
   // Test für Latest Posts

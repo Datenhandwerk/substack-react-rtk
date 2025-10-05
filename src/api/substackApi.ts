@@ -39,6 +39,15 @@ export interface Post {
   "author_image": ImageVariants
 }
 
+interface SubstackApiResponse<T> {
+  data: T;
+  status: string;
+  endpointName: string;
+  requestId: string;
+  startedTimeStamp: number;
+  fulfilledTimeStamp: number;
+}
+
 export const substackApi = createApi({
   reducerPath: 'substackApi',
   baseQuery: fetchBaseQuery({
@@ -58,6 +67,7 @@ export const substackApi = createApi({
         url: '/post',
         params: { publication_url, slug }
       }),
+      transformResponse: (response: SubstackApiResponse<Post>) => response.data,
       providesTags: ['Post']
     }),
     getLatestPosts: builder.query<Post[], { publication_url: string, limit?: number, offset?: number }>({
@@ -65,6 +75,7 @@ export const substackApi = createApi({
         url: '/posts/latest',
         params: {publication_url, limit, offset}
       }),
+      transformResponse: (response: SubstackApiResponse<Post[]>) => response.data,
       providesTags: ['LatestPosts']
     }),
     getTopPosts: builder.query<Post[], { publication_url: string, limit?: number, offset?: number }>({
@@ -72,6 +83,7 @@ export const substackApi = createApi({
         url: '/posts/top',
         params: {publication_url, limit, offset}
       }),
+      transformResponse: (response: SubstackApiResponse<Post[]>) => response.data,
       providesTags: ['TopPosts']
     }),
     searchPosts: builder.query<Post[], { publication_url: string, query: string, limit?: number, offset?: number }>({
@@ -79,6 +91,7 @@ export const substackApi = createApi({
         url: '/posts/search',
         params: {publication_url, query, limit, offset}
       }),
+      transformResponse: (response: SubstackApiResponse<Post[]>) => response.data,
       providesTags: ['SearchPosts']
     })
   })
