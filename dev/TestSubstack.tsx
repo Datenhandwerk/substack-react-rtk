@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGetPostQuery, useGetLatestPostsQuery } from '../src/api/substackApi';
+import { useGetPostQuery, useGetLatestPostsQuery } from '../src';
 
 export const TestSubstack: React.FC = () => {
 

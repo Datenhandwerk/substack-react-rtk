@@ -1,4 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { BaseQueryFn } from '@reduxjs/toolkit/query';
+import type { RootState } from '../store/store';
 
 export interface ImageVariants {
   original: string;
@@ -48,18 +50,27 @@ interface SubstackApiResponse<T> {
   fulfilledTimeStamp: number;
 }
 
-export const substackApi = createApi({
-  reducerPath: 'substackApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_SUBSTACK_API_URL || 'https://api.substackapi.dev',
+const dynamicBaseQuery: BaseQueryFn = async (args, api, extraOptions) => {
+  const state = api.getState() as RootState;
+  const { apiUrl, apiKey } = state.config;
+
+  const baseQuery = fetchBaseQuery({
+    baseUrl: apiUrl || 'https://api.substackapi.dev',
     prepareHeaders: (headers) => {
-      const apiKey = import.meta.env.VITE_SUBSTACK_API_KEY;
       if (apiKey) {
         headers.set('X-API-Key', apiKey);
       }
       return headers;
     }
-  }),
+  });
+
+  return baseQuery(args, api, extraOptions);
+};
+
+
+export const substackApi = createApi({
+  reducerPath: 'substackApi',
+  baseQuery: dynamicBaseQuery,
   tagTypes: ['Post', 'LatestPosts', 'TopPosts', 'SearchPosts'],
   endpoints: (builder) => ({
     getPost: builder.query<Post, { publication_url: string; slug: string }>({

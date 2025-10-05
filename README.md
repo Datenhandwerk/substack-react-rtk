@@ -1,4 +1,4 @@
-
+```markdown
 # DHWK Substack React
 
 A modern React library for Substack API integration with Redux Toolkit Query.
@@ -10,28 +10,36 @@ A modern React library for Substack API integration with Redux Toolkit Query.
 - ⚡ **React Hooks** - Simple API integration with hooks
 - 🔄 **Automatic Refetching** - Smart cache invalidation
 - 🎯 **Tree-shakeable** - Optimized bundle size
+- ⚙️ **Runtime Configuration** - Configure via props, not environment variables
 
 ## 📦 Installation
-``` bash
 
+```bash
 # With Yarn
 yarn add @datenhandwerk/substack-react-rtk
 
 # With npm
 npm install @datenhandwerk/substack-react-rtk
 ```
+```
+
+
 ### Peer Dependencies
 
 Make sure you have the following packages installed:
-``` bash
-  yarn add react react-dom react-redux @reduxjs/toolkit
+
+```shell script
+yarn add react react-dom react-redux @reduxjs/toolkit
 ```
+
+
 ## 🚀 Quick Start
 
 ### 1. Setup Provider
 
-Wrap your app with the `SubstackProvider`:
-``` typescript
+Wrap your app with the `SubstackProvider` and pass your configuration:
+
+```typescript
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { SubstackProvider } from '@datenhandwerk/substack-react-rtk';
@@ -39,59 +47,116 @@ import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <SubstackProvider>
+    <SubstackProvider
+      apiKey="your-api-key-here"
+      apiUrl="https://api.substackapi.dev"
+      publicationUrl="example.substack.com"
+    >
       <App />
     </SubstackProvider>
   </React.StrictMode>
 );
 ```
-### 2. Configure Environment Variables
 
-Create a `.env` file:
-``` env
-VITE_SUBSTACK_API_URL=https://api.substackapi.dev
-VITE_SUBSTACK_API_KEY=your-api-key-here
-VITE_SUBSTACK_PUBLICATION=publication_url (e.g. example.substack.com)
+
+**Important:** Configuration is passed via **props at runtime**, not via environment variables. This ensures the library works correctly when published to npm.
+
+### 2. Using Environment Variables (Optional)
+
+If you want to use environment variables in your consuming app:
+
+```typescript
+<SubstackProvider
+  apiKey={import.meta.env.VITE_SUBSTACK_API_KEY}
+  apiUrl={import.meta.env.VITE_SUBSTACK_API_URL}
+  publicationUrl={import.meta.env.VITE_SUBSTACK_PUBLICATION}
+>
+  <App />
+</SubstackProvider>
 ```
+
+
+Create a `.env` file in your project:
+
+```
+VITE_SUBSTACK_API_KEY=your-api-key-here
+VITE_SUBSTACK_API_URL=https://api.substackapi.dev
+VITE_SUBSTACK_PUBLICATION=example.substack.com
+```
+
+
 ### 3. Use Hooks
-``` typescript
+
+```typescript
 import React from 'react';
 import { useGetLatestPostsQuery } from '@datenhandwerk/substack-react-rtk';
 
 export const BlogPosts: React.FC = () => {
-const { data, isLoading, error } = useGetLatestPostsQuery({
-    publication_url: 'example.substack.com', // or use import.meta.env.VITE_SUBSTACK_PUBLICATION
+  const { data, isLoading, error } = useGetLatestPostsQuery({
+    publication_url: 'example.substack.com',
     limit: 10
-});
+  });
 
-if (isLoading) return <div>Loading...</div>;
-if (error) return <div>Error loading posts</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading posts</div>;
 
-return (
+  return (
     <div>
-        {data?.map((post) => (
-            <article key={post.slug}>
-                <h2>{post.title}</h2>
-                <p>{post.excerpt}</p>
-            </article>
-        ))}
+      {data?.map((post) => (
+        <article key={post.slug}>
+          <h2>{post.title}</h2>
+          <p>{post.excerpt}</p>
+        </article>
+      ))}
     </div>
-);
+  );
 };
 ```
+
+
 ## 📚 API Reference
+
+### SubstackProvider
+
+The main provider component that configures the library.
+
+```typescript
+interface SubstackProviderProps {
+  children: React.ReactNode;
+  apiKey?: string;          // Your Substack API key
+  apiUrl?: string;          // API base URL (default: 'https://api.substackapi.dev')
+  publicationUrl?: string;  // Your default publication URL
+}
+```
+
+
+**Example:**
+
+```typescript
+<SubstackProvider
+  apiKey="sk_live_..."
+  apiUrl="https://api.substackapi.dev"
+  publicationUrl="myblog.substack.com"
+>
+  <App />
+</SubstackProvider>
+```
+
 
 ### Hooks
 
 #### `useGetPostQuery`
 
 Fetches a single post.
-``` typescript
+
+```typescript
 const { data, isLoading, error } = useGetPostQuery({
-    publication_url: 'example.substack.com', // or use import.meta.env.VITE_SUBSTACK_PUBLICATION
-    slug: 'my-post-slug'
+  publication_url: 'example.substack.com',
+  slug: 'my-post-slug'
 });
 ```
+
+
 **Parameters:**
 - `publication_url` (string, required) - The Substack publication URL
 - `slug` (string, required) - The post slug
@@ -101,13 +166,16 @@ const { data, isLoading, error } = useGetPostQuery({
 #### `useGetLatestPostsQuery`
 
 Fetches the latest posts.
-``` typescript
+
+```typescript
 const { data, isLoading, error } = useGetLatestPostsQuery({
-    publication_url: 'example.substack.com',  // or use import.meta.env.VITE_SUBSTACK_PUBLICATION
-    limit: 10,
-    offset: 0
+  publication_url: 'example.substack.com',
+  limit: 10,
+  offset: 0
 });
 ```
+
+
 **Parameters:**
 - `publication_url` (string, required) - The Substack publication URL
 - `limit` (number, optional, default: 10) - Number of posts to fetch
@@ -118,13 +186,16 @@ const { data, isLoading, error } = useGetLatestPostsQuery({
 #### `useGetTopPostsQuery`
 
 Fetches the most popular posts.
-``` typescript
+
+```typescript
 const { data, isLoading, error } = useGetTopPostsQuery({
-    publication_url: 'example.substack.com', // or use import.meta.env.VITE_SUBSTACK_PUBLICATION
-    limit: 10,
-    offset: 0
+  publication_url: 'example.substack.com',
+  limit: 10,
+  offset: 0
 });
 ```
+
+
 **Parameters:**
 - `publication_url` (string, required) - The Substack publication URL
 - `limit` (number, optional, default: 10) - Number of posts to fetch
@@ -135,15 +206,17 @@ const { data, isLoading, error } = useGetTopPostsQuery({
 #### `useSearchPostsQuery`
 
 Searches through posts.
-```
-typescript
+
+```typescript
 const { data, isLoading, error } = useSearchPostsQuery({
-    publication_url: 'example.substack.com', // or use import.meta.env.VITE_SUBSTACK_PUBLICATION
-    query: 'react',
-    limit: 10,
-    offset: 0
+  publication_url: 'example.substack.com',
+  query: 'react',
+  limit: 10,
+  offset: 0
 });
 ```
+
+
 **Parameters:**
 - `publication_url` (string, required) - The Substack publication URL
 - `query` (string, required) - Search term
@@ -155,6 +228,7 @@ const { data, isLoading, error } = useSearchPostsQuery({
 ### Types
 
 #### `Post`
+
 ```typescript
 interface Post {
   slug: string;
@@ -174,7 +248,10 @@ interface Post {
   author_image: ImageVariants;
 }
 ```
+
+
 #### `CoverImage`
+
 ```typescript
 interface CoverImage {
   original: string;
@@ -184,7 +261,10 @@ interface CoverImage {
   large: string;
 }
 ```
+
+
 #### `ColorPalette`
+
 ```typescript
 interface ColorPalette {
   vibrant: string;
@@ -195,7 +275,10 @@ interface ColorPalette {
   dark_muted: string;
 }
 ```
+
+
 #### `ImageVariants`
+
 ```typescript
 interface ImageVariants {
   original: string;
@@ -204,12 +287,15 @@ interface ImageVariants {
   large: string;
 }
 ```
+
+
 ## 🎨 Examples
 
 ### Pagination
+
 ```typescript
 import { useState } from 'react';
-import { useGetLatestPostsQuery } from 'substack-react-rtk';
+import { useGetLatestPostsQuery } from '@datenhandwerk/substack-react-rtk';
 
 export const PaginatedPosts: React.FC = () => {
   const [page, setPage] = useState(0);
@@ -248,36 +334,40 @@ export const PaginatedPosts: React.FC = () => {
   );
 };
 ```
+
+
 ### Search with Debouncing
+
 ```typescript
 import { useState, useEffect } from 'react';
-import { useSearchPostsQuery } from 'substack-react-rtk';
+import { useSearchPostsQuery } from '@datenhandwerk/substack-react-rtk';
 
 export const SearchPosts: React.FC = () => {
-const [searchTerm, setSearchTerm] = useState('');
-const [debouncedTerm, setDebouncedTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedTerm, setDebouncedTerm] = useState('');
 
-useEffect(() => {
-  const timer = setTimeout(() => setDebouncedTerm(searchTerm), 500);
-  return () => clearTimeout(timer);
-}, [searchTerm]);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedTerm(searchTerm), 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
-const { data, isLoading } = useSearchPostsQuery({
-    publication_url: 'example.substack.com',
-    query: debouncedTerm
-  },
-  { skip: !debouncedTerm }
-);
+  const { data, isLoading } = useSearchPostsQuery(
+    {
+      publication_url: 'example.substack.com',
+      query: debouncedTerm
+    },
+    { skip: !debouncedTerm }
+  );
 
-return (
-  <div>
-  <input 
-    type="text"
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    placeholder="Search posts..."
-  />
-
+  return (
+    <div>
+      <input 
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search posts..."
+      />
+      
       {isLoading && <p>Searching...</p>}
       
       {data?.map(post => (
@@ -290,10 +380,12 @@ return (
   );
 };
 ```
+
+
 ### Display Post with Cover Image
 
 ```typescript
-import { useGetPostQuery } from 'substack-react-rtk';
+import { useGetPostQuery } from '@datenhandwerk/substack-react-rtk';
 
 export const PostDetail: React.FC<{ slug: string }> = ({ slug }) => {
   const { data: post, isLoading, error } = useGetPostQuery({
@@ -338,10 +430,51 @@ export const PostDetail: React.FC<{ slug: string }> = ({ slug }) => {
   );
 };
 ```
+
+
+## 🔧 Configuration
+
+### Runtime Configuration vs Environment Variables
+
+**Important:** This library uses **runtime configuration** via props, not build-time environment variables.
+
+❌ **This won't work** (environment variables are embedded at build-time of the library):
+```typescript
+// Inside the library - this doesn't work for published packages
+const apiKey = import.meta.env.VITE_SUBSTACK_API_KEY;
+```
+
+
+✅ **This works** (configuration passed at runtime):
+```typescript
+// In your consuming app
+<SubstackProvider apiKey="your-key">
+  <App />
+</SubstackProvider>
+```
+
+
+### Why Runtime Configuration?
+
+When you publish a library to npm, it's built once. Environment variables like `import.meta.env` are replaced with their values at **build time** of the library, not the consuming application. By using runtime configuration via props, each application can provide its own configuration.
+
+### Dynamic Configuration
+
+You can change configuration at runtime by remounting the provider with new props:
+
+```typescript
+const [apiKey, setApiKey] = useState('initial-key');
+
+<SubstackProvider apiKey={apiKey}>
+  <App />
+</SubstackProvider>
+
+// Later: setApiKey('new-key') will recreate the store with new config
 ```
 
 
 ## 🛠️ Development
+
 ```shell script
 # Install dependencies
 yarn install
@@ -360,12 +493,13 @@ yarn preview
 ### Project Structure
 
 ```
-substack-react-rtk/
+@datenhandwerk/substack-react-rtk/
 ├── src/
 │   ├── api/
 │   │   └── substackApi.ts      # API definitions
 │   ├── store/
-│   │   └── store.ts            # Redux store configuration
+│   │   ├── store.ts            # Redux store configuration
+│   │   └── configSlice.ts      # Configuration slice
 │   ├── components/
 │   │   └── SubstackProvider.tsx # Provider component
 │   └── index.ts                # Public exports
@@ -374,32 +508,6 @@ substack-react-rtk/
 │   ├── App.tsx
 │   └── index.html
 └── dist/                       # Build output
-```
-
-
-## 🔧 Configuration
-
-### Custom API URL
-
-You can override the API URL via environment variables or by passing it to the provider:
-
-```typescript
-<SubstackProvider apiUrl="https://custom-api.example.com">
-  <App />
-</SubstackProvider>
-```
-
-
-### TypeScript Configuration
-
-The library includes full TypeScript definitions. For better IDE support, add this to your `tsconfig.json`:
-
-```json
-{
-  "compilerOptions": {
-    "types": ["vite/client"]
-  }
-}
 ```
 
 
@@ -419,7 +527,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 🐛 Issues
 
-If you find a bug or have a feature request, please open an issue on [GitHub](https://github.com/your-username/substack-react-rtk/issues).
+If you find a bug or have a feature request, please open an issue on [GitHub](https://github.com/datenhandwerk/substack-react-rtk/issues).
 
 ## 🔗 Links
 
@@ -427,11 +535,11 @@ If you find a bug or have a feature request, please open an issue on [GitHub](ht
 - [Redux Toolkit Query](https://redux-toolkit.js.org/rtk-query/overview)
 - [React Documentation](https://react.dev)
 
-## 📊 Status
+## 📊 Package Info
 
-![npm version](https://img.shields.io/npm/v/substack-react-rtk)
-![license](https://img.shields.io/npm/l/substack-react-rtk)
+![npm version](https://img.shields.io/npm/v/@datenhandwerk/substack-react-rtk)
+![license](https://img.shields.io/npm/l/@datenhandwerk/substack-react-rtk)
 
 ---
 
-Made with ❤️ by dhwk
+Made with ❤️ by DHWK

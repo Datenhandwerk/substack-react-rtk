@@ -5,7 +5,10 @@ import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <SubstackProvider apiKey={'sk_live_f2e4f714932b4f2e82f9d8'}>
+    <SubstackProvider
+      apiKey={import.meta.env.VITE_SUBSTACK_API_KEY}
+      apiUrl="https://api.substackapi.dev"
+      publicationUrl={import.meta.env.VITE_SUBSTACK_PUBLICATION}>
       <App />
     </SubstackProvider>
   </React.StrictMode>

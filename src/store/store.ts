@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { substackApi } from '../api/substackApi';
+import configReducer from './configSlice';
 
 export const createSubstackStore = (preloadedState = {}) => {
   return configureStore({
     reducer: {
-      [substackApi.reducerPath]: substackApi.reducer
+      [substackApi.reducerPath]: substackApi.reducer,
+      config: configReducer
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(substackApi.middleware),
