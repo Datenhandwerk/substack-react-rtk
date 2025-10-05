@@ -10,8 +10,6 @@ export interface SubstackProviderProps {
   publicationUrl?: string;
 }
 
-const store = createSubstackStore();
-
 export const SubstackProvider: React.FC<SubstackProviderProps> = (
   {
     children,
