@@ -1,4 +1,3 @@
-```markdown
 # DHWK Substack React
 
 A modern React library for Substack API integration with Redux Toolkit Query.
@@ -20,7 +19,6 @@ yarn add @datenhandwerk/substack-react-rtk
 
 # With npm
 npm install @datenhandwerk/substack-react-rtk
-```
 ```
 
 
